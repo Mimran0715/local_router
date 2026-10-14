@@ -38,23 +38,10 @@ def status(wt: Path) -> set:
     return set(out.splitlines())
 
 
-# def ollama_models(api_base: str):
-#     """Return the set of model names the Ollama server lists, or None if unreachable."""
-#     try:
-#         with urllib.request.urlopen(f"{api_base.rstrip('/')}/api/tags", timeout=5) as r:
-#             return {m["name"] for m in json.load(r).get("models", [])}
-#     except (urllib.error.URLError, OSError, ValueError):
-#         return None
 def ollama_models(api_base: str):
-    """Return model names from Ollama, or None if unreachable."""
-    base = api_base.rstrip("/")
-    if base.endswith("/v1"):
-        base = base[:-3]
-
+    """Return the set of model names the Ollama server lists, or None if unreachable."""
     try:
-        with urllib.request.urlopen(
-            f"{base}/api/tags", timeout=5
-        ) as r:
+        with urllib.request.urlopen(f"{api_base.rstrip('/')}/api/tags", timeout=5) as r:
             return {m["name"] for m in json.load(r).get("models", [])}
     except (urllib.error.URLError, OSError, ValueError):
         return None
@@ -141,6 +128,11 @@ def main():
     print(f"  {wt}")
 
     try:
+        ok, note = backend.setup_worktree(repo, wt)
+        print(f"  setup: {note}")
+        if not ok:
+            sys.exit("Setup failed; fix the issue above and rerun.")
+
         baseline = None
         if not args.skip_baseline:
             print("\n[3/5] Baseline: verifier on the untouched checkout (should FAIL)")

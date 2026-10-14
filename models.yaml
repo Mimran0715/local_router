@@ -1,11 +1,11 @@
 backends:
   local_small:
     kind: ollama
-    api_base: http://localhost:11434/v1
+    api_base: http://127.0.0.1:11434
     model: qwen2.5-coder:7b
   local_medium:
     kind: ollama
-    api_base: http://localhost:11434/v1
+    api_base: http://127.0.0.1:11434
     model: qwen2.5-coder:14b
   ollama_cloud:
     kind: ollama
