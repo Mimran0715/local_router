@@ -1,16 +1,15 @@
 backends:
   local_small:
     kind: ollama
-    base_url: http://localhost:11434/v1
+    api_base: http://localhost:11434/v1
     model: qwen2.5-coder:7b
   local_medium:
     kind: ollama
-    base_url: http://localhost:11434/v1
+    api_base: http://localhost:11434/v1
     model: qwen2.5-coder:14b
   ollama_cloud:
     kind: ollama
-    base_url: https://ollama.com/v1   # needs an API key
-    model: gpt-oss:120b-cloud
-    max_concurrent: 1
+    api_base: http://127.0.0.1:11434
+    model: ollama_chat/gpt-oss:120b-cloud
   codex:
     kind: codex_cli

@@ -1,32 +1,486 @@
 {
-    "tasks": [
-        {
-        "id": "t01",
-        "repo": "docs_rag",
-        "base_commit": "abc123",
-        "difficulty": "easy",
-        "prompt": "Add 'qwen2.5-coder:14b' to the list of available models and make it selectable in the config.",
-        "verifier": "pytest tests/test_models.py::test_qwen_listed",
-        "files_expected": ["config.py"]
-        }, 
-        {
-        "id": "t02",
-        "repo": "drafts-desktop",
-        "base_commit": "abc123",
-        "difficulty": "easy",
-        "prompt": "Add 'qwen2.5-coder:14b' to the list of available models and make it selectable in the config.",
-        "verifier": "pytest tests/test_models.py::test_qwen_listed",
-        "files_expected": ["config.py"]
-        }, 
-        {
-        "id": "t03",
-        "repo": "docs_rag",
-        "base_commit": "abc123",
-        "difficulty": "easy",
-        "prompt": "Add 'qwen2.5-coder:14b' to the list of available models and make it selectable in the config.",
-        "verifier": "pytest tests/test_models.py::test_qwen_listed",
-        "files_expected": ["config.py"]
-        }
-    ]
+  "tasks": [
+    {
+      "task_id": "t01",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "easy",
+      "prompt": "In the chat panel's model selector, add 'qwen2.5-coder:14b' as an option after 'llama-writer' and 'llama3.1'. Selecting it must update the selected-model state and flow through the existing preferences/persistence path exactly like the other models.",
+      "verifier": "npx vitest run tests/AgentChat.models.test.tsx",
+      "files_expected": [
+        "src/components/AgentChat.tsx"
+      ]
+    },
+    {
+      "task_id": "t02",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "easy",
+      "prompt": "Replace the hardcoded document chunk size (900) and overlap (150) used for Chroma indexing with exported named constants CHUNK_SIZE and CHUNK_OVERLAP (same default values) in electron/ai/vectorStore.js, and use them in the text splitter. No behavior change.",
+      "verifier": "npx vitest run tests/vectorStore.constants.test.js",
+      "files_expected": [
+        "electron/ai/vectorStore.js"
+      ]
+    },
+    {
+      "task_id": "t03",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "easy",
+      "prompt": "Add a live word count to the DraftEditor footer. Render it as '<n> words' (singular '1 word', and '0 words' for empty content) inside an element with data-testid='word-count'. It must update as the editor text changes.",
+      "verifier": "npx vitest run tests/DraftEditor.wordcount.test.tsx",
+      "files_expected": [
+        "src/components/DraftEditor.tsx"
+      ]
+    },
+    {
+      "task_id": "t04",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "easy",
+      "prompt": "Add a 'Clear chat' button (data-testid='clear-chat') to AgentChat. It calls a new optional prop onClearConversation, and is disabled when there are no messages. In App.tsx, wire the prop so it empties the visible message list.",
+      "verifier": "npx vitest run tests/AgentChat.clear.test.tsx",
+      "files_expected": [
+        "src/components/AgentChat.tsx",
+        "src/App.tsx"
+      ]
+    },
+    {
+      "task_id": "t05",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "medium",
+      "prompt": "Add a Ctrl/Cmd+Shift+R keyboard shortcut that toggles the 'Use project context' (RAG) checkbox in AgentChat. It must work from anywhere in the window, call preventDefault, ignore plain 'r' / Shift+R typed in text inputs, and be advertised in the checkbox's title attribute.",
+      "verifier": "npx vitest run tests/AgentChat.shortcut.test.tsx",
+      "files_expected": [
+        "src/components/AgentChat.tsx"
+      ]
+    },
+    {
+      "task_id": "t06",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "medium",
+      "prompt": "In the 'understand' node (electron/ai/nodes.js), extend the heuristic intent routing so messages containing 'summarize', 'summary of', or 'tl;dr' (case-insensitive) are classified as the 'analyze' intent WITHOUT calling Ollama. Existing heuristics and the Ollama fallback for ambiguous messages must keep working unchanged.",
+      "verifier": "npx vitest run tests/nodes.intent.test.js",
+      "files_expected": [
+        "electron/ai/nodes.js"
+      ]
+    },
+    {
+      "task_id": "t07",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "medium",
+      "prompt": "Persist the editor font size and theme in the SQLite preferences so they restore on launch. Extend the existing preferences API in electron/database.js so reading preferences also returns fontSize and theme, and saving preferences MERGES with existing keys (last project, RAG toggle, selected model) instead of overwriting them. Expose it through the existing preload bridge and restore the values in App.tsx. Do not rename existing functions.",
+      "verifier": "npx vitest run tests/database.preferences.test.js",
+      "files_expected": [
+        "electron/database.js",
+        "electron/preload.js",
+        "electron/main.js",
+        "src/App.tsx"
+      ]
+    },
+    {
+      "task_id": "t08",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "medium",
+      "prompt": "Cap the recent-projects list at 10 entries in electron/database.js. Adding an 11th project drops the least recently opened one, and re-opening an existing project moves it to the top without creating a duplicate row.",
+      "verifier": "npx vitest run tests/database.recents.test.js",
+      "files_expected": [
+        "electron/database.js"
+      ]
+    },
+    {
+      "task_id": "t09",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "hard",
+      "prompt": "Add per-intent model overrides. Preferences gain intentModels: { generate?: string, analyze?: string, question?: string }. When an override is set, the matching tool in the LangGraph 'execute' node must call Ollama with that model instead of the globally selected one; unset intents fall back to the selected model. Add an 'Advanced' section to the AgentChat model picker with one dropdown per intent, persisted through the preferences flow and the preload bridge. Include tests.",
+      "verifier": "npx vitest run tests/intentModels.test.js tests/AgentChat.intentModels.test.tsx",
+      "files_expected": [
+        "electron/ai/nodes.js",
+        "electron/ai/tools.js",
+        "electron/ai/graph.js",
+        "electron/database.js",
+        "electron/main.js",
+        "electron/preload.js",
+        "src/App.tsx",
+        "src/components/AgentChat.tsx"
+      ]
+    },
+    {
+      "task_id": "t10",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "hard",
+      "prompt": "Implement hybrid retrieval in electron/ai/vectorStore.js. When Chroma is available, run the semantic query and the keyword matcher over the same chunks and merge the rankings with reciprocal rank fusion (k=60), de-duplicating by chunk id. Export fuseRankings(listA, listB, k = 60). Add a new retrieval status 'Hybrid (semantic + keyword)' shown in the chat UI; the three existing statuses keep their current trigger conditions.",
+      "verifier": "npx vitest run tests/vectorStore.hybrid.test.js",
+      "files_expected": [
+        "electron/ai/vectorStore.js",
+        "electron/ai/tools.js",
+        "src/components/AgentChat.tsx"
+      ]
+    },
+    {
+      "task_id": "t11",
+      "repo": "drafts-desktop",
+      "base_commit": "6b283def1e3709687e6af992b6cbcd21fce534c2",
+      "difficulty": "hard",
+      "prompt": "Add a Stop button that cancels an in-flight chat stream. Expose cancelChat(threadId) on the existing preload bridge, handled by a new 'chat:cancel' IPC channel in main.js that aborts the running graph via an AbortController. Streaming must stop promptly; the partial text is saved as an agent message with cancelled: true in SQLite; the input re-enables; and a following message on the same thread must work normally.",
+      "verifier": "npx vitest run tests/chatCancel.test.js",
+      "files_expected": [
+        "electron/main.js",
+        "electron/preload.js",
+        "electron/ai/graph.js",
+        "electron/ai/nodes.js",
+        "src/App.tsx",
+        "src/components/AgentChat.tsx"
+      ]
+    },
+    {
+      "task_id": "t12",
+      "repo": "docs_rag",
+      "base_commit": "dc1074ed14749dce677fcd83b72eaffbc2b2e8be",
+      "difficulty": "easy",
+      "prompt": "In eval.py, check_retrival_hits raises ZeroDivisionError when the keywords list is empty. Make it return False in that case. Keep the function name and signature unchanged.",
+      "verifier": "pytest tests/test_eval_hits.py::test_empty_keywords_returns_false",
+      "files_expected": [
+        "eval.py"
+      ]
+    },
+    {
+      "task_id": "t13",
+      "repo": "docs_rag",
+      "base_commit": "dc1074ed14749dce677fcd83b72eaffbc2b2e8be",
+      "difficulty": "easy",
+      "prompt": "In eval.py, read QA_TEST and DOCS_DIRECTORY from the environment at call time (not import time). parse_qa_text must raise ValueError mentioning 'QA_TEST' when it is unset, and main() must raise ValueError mentioning 'DOCS_DIRECTORY' when it is unset, instead of the current TypeError from open(None).",
+      "verifier": "pytest tests/test_eval_env.py",
+      "files_expected": [
+        "eval.py"
+      ]
+    },
+    {
+      "task_id": "t14",
+      "repo": "docs_rag",
+      "base_commit": "dc1074ed14749dce677fcd83b72eaffbc2b2e8be",
+      "difficulty": "easy",
+      "prompt": "Add a .env.example file documenting every environment variable the repo reads (at minimum DOCS_DIRECTORY and QA_TEST) with placeholder values and a one-line comment each. Make sure .env is listed in .gitignore.",
+      "verifier": "pytest tests/test_env_example.py",
+      "files_expected": [
+        ".env.example",
+        ".gitignore"
+      ]
+    },
+    {
+      "task_id": "t15",
+      "repo": "docs_rag",
+      "base_commit": "dc1074ed14749dce677fcd83b72eaffbc2b2e8be",
+      "difficulty": "medium",
+      "prompt": "Implement the stubbed eval_queries in eval.py with the new signature eval_queries(qa_pairs, retrieval_fn, threshold=0.3) -> List[float]. For each QA pair it calls retrieval_fn(question) and returns the fraction of that pair's keywords found (case-insensitive) in the combined retrieved text; pairs with no keywords score 0.0. Do not call Ollama or Chroma inside this function.",
+      "verifier": "pytest tests/test_eval_queries.py",
+      "files_expected": [
+        "eval.py"
+      ]
+    },
+    {
+      "task_id": "t16",
+      "repo": "docs_rag",
+      "base_commit": "dc1074ed14749dce677fcd83b72eaffbc2b2e8be",
+      "difficulty": "medium",
+      "prompt": "Add compute_mrr(retrieval_fn, qa_pairs, threshold=0.3) to eval.py returning mean reciprocal rank. A QA pair's rank is the 1-indexed position of the first retrieved document whose own text contains at least `threshold` of that pair's keywords (case-insensitive); 0 if none does. Call it from main() for each retriever and print the result. Keep eval_hits' return signature (hits, misses) unchanged.",
+      "verifier": "pytest tests/test_mrr.py",
+      "files_expected": [
+        "eval.py"
+      ]
+    },
+    {
+      "task_id": "t17",
+      "repo": "docs_rag",
+      "base_commit": "dc1074ed14749dce677fcd83b72eaffbc2b2e8be",
+      "difficulty": "medium",
+      "prompt": "Replace the hardcoded hybrid weights [0.3, 0.7] and k=4 in eval.py main() with argparse options. Add parse_args(argv=None) returning a namespace with weights (two floats via --weights, default 0.3 0.7) and k (--k, default 4). Weights that do not sum to 1.0 (tolerance 1e-6) or are negative must call parser.error (SystemExit code 2). main() must use the parsed values.",
+      "verifier": "pytest tests/test_eval_args.py",
+      "files_expected": [
+        "eval.py"
+      ]
+    },
+    {
+      "task_id": "t18",
+      "repo": "docs_rag",
+      "base_commit": "dc1074ed14749dce677fcd83b72eaffbc2b2e8be",
+      "difficulty": "medium",
+      "prompt": "rag.py is currently empty. Implement build_prompt(question, docs) and answer(question, retriever_fn, llm_fn). build_prompt returns a string with numbered context blocks like '[1] <text>', includes the question, and instructs the model to answer only from the context. answer calls retriever_fn(question) -> List[Document], then llm_fn(prompt) -> str, and returns {'answer': str, 'sources': List[str]} where sources are de-duplicated metadata['source'] values in first-seen order (docs without a source are skipped). The module must make no network calls at import time.",
+      "verifier": "pytest tests/test_rag.py",
+      "files_expected": [
+        "rag.py"
+      ]
+    },
+    {
+      "task_id": "t19",
+      "repo": "docs_rag",
+      "base_commit": "dc1074ed14749dce677fcd83b72eaffbc2b2e8be",
+      "difficulty": "hard",
+      "prompt": "api.py is currently empty. Implement a FastAPI app exposing GET /health -> {'status': 'ok'} and POST /query with body {question: str, k: int = 4, mode: 'dense'|'bm25'|'hybrid' = 'hybrid'} returning {mode, k, results: [{content, metadata}]}. Reject k outside 1..20, an empty question, or an unknown mode with HTTP 422. Retrievers must be built lazily through a dependency function get_retrievers() that tests can override via app.dependency_overrides, so importing api.py never touches Ollama or Chroma. Declare new dependencies in requirements.txt (create it if absent).",
+      "verifier": "pytest tests/test_api.py",
+      "files_expected": [
+        "api.py",
+        "requirements.txt"
+      ]
+    },
+    {
+      "task_id": "t20",
+      "repo": "docs_rag",
+      "base_commit": "dc1074ed14749dce677fcd83b72eaffbc2b2e8be",
+      "difficulty": "hard",
+      "prompt": "Add reciprocal rank fusion to embeddings.py: reciprocal_rank_fusion(result_lists, k=60, top_n=4) -> List[Document] (score = sum of 1/(k+rank) over lists, rank 1-indexed, de-duplicating by page_content, ties broken by first appearance) and build_rrf_retriever(retrievers, k=60, top_n=4) returning a callable query -> List[Document]. Then add a 'Hybrid (RRF)' run to eval.py main() next to the existing weighted ensemble. Do not change existing functions' behavior.",
+      "verifier": "pytest tests/test_rrf.py",
+      "files_expected": [
+        "embeddings.py",
+        "eval.py"
+      ]
+    },
+    {
+      "task_id": "t21",
+      "repo": "chat_cli",
+      "base_commit": "5a8df6166de4e8e38ba8aaaf188f513994738a01",
+      "difficulty": "easy",
+      "prompt": "In chat.ts, export DEFAULT_MODEL = 'llama3.1' and getModelName(env = process.env) which returns env.OLLAMA_MODEL when set and non-empty, else DEFAULT_MODEL. messageChat must use getModelName() instead of the hardcoded model string.",
+      "verifier": "npx vitest run tests/chat.model.test.ts",
+      "files_expected": [
+        "chat.ts"
+      ]
+    },
+    {
+      "task_id": "t22",
+      "repo": "chat_cli",
+      "base_commit": "5a8df6166de4e8e38ba8aaaf188f513994738a01",
+      "difficulty": "easy",
+      "prompt": "Create commands.ts exporting isExitCommand(input: string): boolean, true for '/exit' and '/quit' (trimmed, case-insensitive) and false otherwise. In index.ts, when the user enters an exit command, print 'Goodbye!' and leave the loop without sending anything to the model.",
+      "verifier": "npx vitest run tests/commands.exit.test.ts",
+      "files_expected": [
+        "commands.ts",
+        "index.ts"
+      ]
+    },
+    {
+      "task_id": "t23",
+      "repo": "chat_cli",
+      "base_commit": "5a8df6166de4e8e38ba8aaaf188f513994738a01",
+      "difficulty": "easy",
+      "prompt": "Set up testing: add vitest as a devDependency and an npm 'test' script ('vitest run'). Write tests/chat.test.ts that mocks 'ai' and 'ai-sdk-ollama' and covers: (1) messageChat returns { role: 'assistant', content } built from the mocked text, (2) the full message history is passed to generateText, (3) errors are logged via console.error and rethrown. No test may need a running Ollama.",
+      "verifier": "npm test && bash verifiers/mutants_chat_cli.sh",
+      "files_expected": [
+        "package.json",
+        "tests/chat.test.ts"
+      ]
+    },
+    {
+      "task_id": "t24",
+      "repo": "chat_cli",
+      "base_commit": "5a8df6166de4e8e38ba8aaaf188f513994738a01",
+      "difficulty": "easy",
+      "prompt": "Blank input currently gets sent to the model. In commands.ts export shouldSend(input: string): boolean (false for empty or whitespace-only strings) and export USER_PROMPT = 'User: ' (with a trailing space). index.ts must use USER_PROMPT for the readline prompt and skip blank lines without adding to the history or calling the model.",
+      "verifier": "npx vitest run tests/commands.blank.test.ts",
+      "files_expected": [
+        "commands.ts",
+        "index.ts"
+      ]
+    },
+    {
+      "task_id": "t25",
+      "repo": "chat_cli",
+      "base_commit": "5a8df6166de4e8e38ba8aaaf188f513994738a01",
+      "difficulty": "medium",
+      "prompt": "Add system prompt and model options. Change messageChat to messageChat(messages, options?: { system?: string; model?: string }): when system is set pass it to generateText as `system`; when model is set it overrides the default model. Existing call sites must keep working. Add a new cli.ts exporting parseCliArgs(argv: string[]) -> { system?: string, model?: string } handling '--system <text>' and '--model <name>' (also accept env CHAT_SYSTEM as the fallback for system). Wire it into index.ts.",
+      "verifier": "npx vitest run tests/chat.options.test.ts tests/cli.args.test.ts",
+      "files_expected": [
+        "chat.ts",
+        "cli.ts",
+        "index.ts"
+      ]
+    },
+    {
+      "task_id": "t26",
+      "repo": "chat_cli",
+      "base_commit": "5a8df6166de4e8e38ba8aaaf188f513994738a01",
+      "difficulty": "medium",
+      "prompt": "Prevent unbounded conversation growth. Extend the Message role type to include 'system' and export trimHistory(messages, maxMessages = 20) from chat.ts: it returns the most recent maxMessages messages, always keeps a leading system message (counted toward the limit), and never returns a list whose first non-system message has role 'assistant' (drop it if needed). Does not mutate its input. index.ts applies it before each model call; the limit is configurable via env CHAT_MAX_HISTORY (invalid values fall back to 20).",
+      "verifier": "npx vitest run tests/chat.trim.test.ts",
+      "files_expected": [
+        "chat.ts",
+        "index.ts"
+      ]
+    },
+    {
+      "task_id": "t27",
+      "repo": "chat_cli",
+      "base_commit": "5a8df6166de4e8e38ba8aaaf188f513994738a01",
+      "difficulty": "medium",
+      "prompt": "Add streaming. Export streamChat(messages, onToken: (t: string) => void): Promise<Message> from chat.ts using streamText from 'ai' and the same Ollama model as messageChat. It calls onToken for each chunk of textStream in order and resolves with { role: 'assistant', content: <full text> }; errors are logged with console.error and rethrown. messageChat stays unchanged. index.ts prints 'AI: ' then tokens as they arrive, then a newline.",
+      "verifier": "npx vitest run tests/chat.stream.test.ts",
+      "files_expected": [
+        "chat.ts",
+        "index.ts"
+      ]
+    },
+    {
+      "task_id": "t28",
+      "repo": "chat_cli",
+      "base_commit": "5a8df6166de4e8e38ba8aaaf188f513994738a01",
+      "difficulty": "medium",
+      "prompt": "Improve terminal UI with no new dependencies. Create ui.ts exporting colorsEnabled(env, isTTY), formatUserPrompt(), formatAI(text) and formatError(text). Colors (ANSI escapes) are on only when stdout is a TTY and NO_COLOR is unset; otherwise the functions return plain 'User: ', 'AI: <text>' and 'Error: <text>'. Use them in index.ts. The 'Goodbye!' message on Ctrl+C must still appear.",
+      "verifier": "npx vitest run tests/ui.test.ts",
+      "files_expected": [
+        "ui.ts",
+        "index.ts"
+      ]
+    },
+    {
+      "task_id": "t29",
+      "repo": "chat_cli",
+      "base_commit": "5a8df6166de4e8e38ba8aaaf188f513994738a01",
+      "difficulty": "hard",
+      "prompt": "Add session persistence. Create sessions.ts exporting saveSession(name, messages): Promise<string> (returns file path), loadSession(name): Promise<Message[]> and listSessions(): Promise<string[]> (sorted). Store JSON files under $CHAT_CLI_HOME/sessions (default ~/.chat_cli/sessions), creating directories as needed, writing atomically (temp file + rename). Names must match /^[\\w-]{1,64}$/ else throw Error('Invalid session name'); loading a missing session throws a clear error. Add parseCommand(input) to commands.ts returning { type: 'save' | 'load' | 'sessions' | 'exit' | 'none', arg?: string } and handle /save <name>, /load <name> (replaces history) and /sessions in the REPL.",
+      "verifier": "npx vitest run tests/sessions.test.ts tests/commands.parse.test.ts",
+      "files_expected": [
+        "sessions.ts",
+        "commands.ts",
+        "index.ts"
+      ]
+    },
+    {
+      "task_id": "t30",
+      "repo": "chat_cli",
+      "base_commit": "5a8df6166de4e8e38ba8aaaf188f513994738a01",
+      "difficulty": "hard",
+      "prompt": "Add model switching and resilience. (1) '/model <name>' switches the active model mid-session and '/models' lists installed models via listModels(fetchFn = fetch): Promise<string[]> exported from chat.ts, which GETs {OLLAMA_HOST or http://127.0.0.1:11434}/api/tags and returns the model names. (2) Export withRetry(fn, { attempts = 3, baseDelayMs = 200, sleep }) with exponential backoff (200ms, 400ms), retrying only transient errors (ECONNREFUSED, 'fetch failed', HTTP 5xx) and never 4xx; sleep must be injectable for tests. messageChat uses it. (3) If the final attempt fails, index.ts prints the error, removes the unanswered user message from history, and keeps the REPL alive.",
+      "verifier": "npx vitest run tests/chat.retry.test.ts tests/chat.models.test.ts",
+      "files_expected": [
+        "chat.ts",
+        "commands.ts",
+        "index.ts"
+      ]
+    },
+    {
+      "task_id": "t31",
+      "repo": "cli_summarizer",
+      "base_commit": "9d1666dcedaca343d953253b418c7d50821eb631",
+      "difficulty": "easy",
+      "prompt": "readFile in summarizer.ts resolves relative paths against __dirname, so running the CLI from another directory fails and absolute paths break. Resolve against process.cwd() instead (absolute paths used as-is).",
+      "verifier": "npx vitest run tests/readFile.path.test.ts",
+      "files_expected": [
+        "summarizer.ts"
+      ]
+    },
+    {
+      "task_id": "t32",
+      "repo": "cli_summarizer",
+      "base_commit": "9d1666dcedaca343d953253b418c7d50821eb631",
+      "difficulty": "easy",
+      "prompt": "readFile currently swallows errors and returns undefined, which then gets summarized as the text 'undefined'. Make readFile reject with an Error whose message includes the file name when the file cannot be read. In app.ts, catch it, print \"Error: could not read file '<name>'\" to stderr, and exit with code 1 before any model call.",
+      "verifier": "npx vitest run tests/readFile.errors.test.ts",
+      "files_expected": [
+        "summarizer.ts",
+        "app.ts"
+      ]
+    },
+    {
+      "task_id": "t33",
+      "repo": "cli_summarizer",
+      "base_commit": "9d1666dcedaca343d953253b418c7d50821eb631",
+      "difficulty": "easy",
+      "prompt": "summarizeDocument only logs the summary and returns undefined, and app.ts assigns the result to an unused variable. Make summarizeDocument return the summary string and throw (instead of logging and returning undefined) when generation fails. app.ts should print only the returned summary to stdout.",
+      "verifier": "npx vitest run tests/summarize.return.test.ts",
+      "files_expected": [
+        "summarizer.ts",
+        "app.ts"
+      ]
+    },
+    {
+      "task_id": "t34",
+      "repo": "cli_summarizer",
+      "base_commit": "9d1666dcedaca343d953253b418c7d50821eb631",
+      "difficulty": "easy",
+      "prompt": "Summarization uses a hardcoded temperature of 0.9, which is too creative for summaries. Export getTemperature(env = process.env): number from summarizer.ts, defaulting to 0.2 and overridable with SUMMARY_TEMPERATURE (a float in [0, 1]; invalid or out-of-range values fall back to 0.2). summarizeDocument must pass it to generateText.",
+      "verifier": "npx vitest run tests/temperature.test.ts",
+      "files_expected": [
+        "summarizer.ts"
+      ]
+    },
+    {
+      "task_id": "t35",
+      "repo": "cli_summarizer",
+      "base_commit": "9d1666dcedaca343d953253b418c7d50821eb631",
+      "difficulty": "medium",
+      "prompt": "Add CLI options and help. Create cli.ts exporting parseArgs(argv: string[]) -> { file?: string, length: 'short'|'medium'|'long', format: 'paragraph'|'bullets', help: boolean } handling '--length' (default medium), '--format' (default paragraph) and '--help'/'-h'. Unknown flags or invalid values throw an Error whose message includes a usage string. Export buildPrompt(text, { length, format }) from summarizer.ts: the prompt still begins with 'Summarize the following document:'; length adds the phrase '2 sentences' / '5 sentences' / '10 sentences' for short / medium / long; bullets format asks for a bullet list. app.ts prints usage and exits 0 for --help.",
+      "verifier": "npx vitest run tests/cli.args.test.ts tests/buildPrompt.test.ts",
+      "files_expected": [
+        "cli.ts",
+        "summarizer.ts",
+        "app.ts"
+      ]
+    },
+    {
+      "task_id": "t36",
+      "repo": "cli_summarizer",
+      "base_commit": "9d1666dcedaca343d953253b418c7d50821eb631",
+      "difficulty": "medium",
+      "prompt": "Support piped input. Create input.ts exporting readInput(filePath: string | undefined, stdin: NodeJS.ReadableStream = process.stdin): Promise<string>. When filePath is undefined or '-', read all of stdin as UTF-8; otherwise delegate to readFile. In app.ts, when no file is given and stdin is not a TTY, summarize stdin; when no file is given and stdin IS a TTY, print usage to stderr and exit 1.",
+      "verifier": "npx vitest run tests/input.test.ts",
+      "files_expected": [
+        "input.ts",
+        "app.ts"
+      ]
+    },
+    {
+      "task_id": "t37",
+      "repo": "cli_summarizer",
+      "base_commit": "9d1666dcedaca343d953253b418c7d50821eb631",
+      "difficulty": "medium",
+      "prompt": "Add a progress spinner shown while waiting for the model. Create spinner.ts exporting createSpinner(stream, text) -> { start(): void, stop(finalText?: string): void }. It writes braille frames plus the text to the given stream every 80ms using setInterval and on stop clears the line with '\\r\\x1b[K' (then writes finalText plus newline if provided). If stream.isTTY is falsy, start and stop write nothing. In app.ts use it on stderr only, so stdout stays clean for piping.",
+      "verifier": "npx vitest run tests/spinner.test.ts",
+      "files_expected": [
+        "spinner.ts",
+        "app.ts"
+      ]
+    },
+    {
+      "task_id": "t38",
+      "repo": "cli_summarizer",
+      "base_commit": "9d1666dcedaca343d953253b418c7d50821eb631",
+      "difficulty": "medium",
+      "prompt": "Set up testing: add vitest as a devDependency and an npm 'test' script ('vitest run'). Write tests under tests/ that mock 'ai' and 'ai-sdk-ollama' and use temp files to cover readFile (success, missing file, relative path) and summarizeDocument (prompt contains the document text, temperature is passed, generation errors are handled). At least 6 tests, none requiring a running Ollama.",
+      "verifier": "npm test && bash verifiers/mutants_cli_summarizer.sh",
+      "files_expected": [
+        "package.json",
+        "tests/summarizer.test.ts"
+      ]
+    },
+    {
+      "task_id": "t39",
+      "repo": "cli_summarizer",
+      "base_commit": "9d1666dcedaca343d953253b418c7d50821eb631",
+      "difficulty": "hard",
+      "prompt": "Support documents longer than the model context via map-reduce summarization. Export chunkText(text, maxChars = 4000, overlap = 200): string[] (every chunk <= maxChars; prefers splitting at paragraph breaks, then sentence ends, then hard cuts; consecutive chunks overlap by at most `overlap` characters; text within maxChars yields exactly one chunk) and summarizeLong(text, summarizeFn): Promise<string> from summarizer.ts. summarizeLong summarizes each chunk sequentially, then combines the partial summaries with one more summarizeFn call using the instruction 'Combine these partial summaries into one coherent summary:', recursing if the combined text still exceeds maxChars. Short text uses exactly one summarizeFn call. app.ts uses summarizeLong.",
+      "verifier": "npx vitest run tests/chunk.test.ts tests/summarizeLong.test.ts",
+      "files_expected": [
+        "summarizer.ts",
+        "app.ts"
+      ]
+    },
+    {
+      "task_id": "t40",
+      "repo": "cli_summarizer",
+      "base_commit": "9d1666dcedaca343d953253b418c7d50821eb631",
+      "difficulty": "hard",
+      "prompt": "Add directory batch mode. Create batch.ts exporting summarizeDirectory(dir, { concurrency = 2, summarizeFn, extensions = ['.txt', '.md'] }): Promise<{ succeeded: string[], failed: { file: string, error: string }[] }>. It summarizes every matching file (non-recursive; skips files ending in '.summary.md'), writes each result to <dir>/summaries/<basename>.summary.md, never runs more than `concurrency` summaries at once, and continues past per-file failures. Add a '--dir <path>' flag to app.ts that runs batch mode, prints a table of results, and exits with code 1 if any file failed.",
+      "verifier": "npx vitest run tests/batch.test.ts",
+      "files_expected": [
+        "batch.ts",
+        "app.ts"
+      ]
+    }
+  ]
 }
-

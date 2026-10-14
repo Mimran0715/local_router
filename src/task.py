@@ -5,17 +5,16 @@ from pathlib import Path
 
 class CodingTask(BaseModel):
     task_id: str
-    difficulty: Literal["easy", "medium", "hard"]
-    prompt: str
-    files: list[str] = []
     repo: str
     base_commit: str
+    difficulty: Literal["easy", "medium", "hard"]
+    prompt: str
     verifier: str
+    files_expected: list[str] = [] 
 
-def load_tasks(task_file: str) -> list:
-    task_json = json.load(Path(task_file).read_text())
-    tasks = [CodingTask(**task) for task in task_json]
-    return tasks
+def load_tasks(task_file: str) -> list[CodingTask]:
+    data = json.loads(Path(task_file).read_text())
+    return [CodingTask(**t) for t in data["tasks"]]
 
 
 
